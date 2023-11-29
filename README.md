@@ -36,6 +36,6 @@ run
 python3 record.py
 ```
 
-## Acknowledgements
+## Acknowledgement
 
 [xWR6843_dataCollection](https://github.com/fanl0228/xWR6843_dataCollection)
