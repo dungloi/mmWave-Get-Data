@@ -1,8 +1,9 @@
 CLI_*.txt
 *.log
-.vscode
 *.pyc
-/DCA1000_SDK/Release/
+*.exe
 # *.so
 # *.dll
-*.exe
+.vscode
+Release/
+Data/
