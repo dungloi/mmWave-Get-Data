@@ -1,8 +1,8 @@
-*.txt
+CLI_*.txt
 *.log
 .vscode
 *.pyc
-release
-*.so
-*.dll
+release/
+# *.so
+# *.dll
 *.exe
