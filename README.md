@@ -19,7 +19,7 @@ pip install requirements.txt
 cd ./DCA1000_SDK && rm -rf release && make && cd ..
 cp ./DCA1000_SDK/Release/DCA1000EVM_CLI_* ./DCA1000_SDK/Release/libRF_API.so ./DCA1000/CLI
 ```
-add the path ```/{your_ws}/DCA1000/CLI``` to ```$LD_LIBRARY_PATH``` in ~/.bashrc, like this:
+add the path ```/{your_ws}/DCA1000/CLI``` to ```$LD_LIBRARY_PATH``` in ```~/.bashrc```, like this:
  ```gedit ~/.bashrc```, add new lines(replace {your_ws} with your workspace path):
 
 ```
