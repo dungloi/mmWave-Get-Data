@@ -1,4 +1,4 @@
-# GetData Using DCA1000 + xWR6843
+# Get mmWave Radar Data through DCA1000 + xWR6843
 
 ## Function 
 
