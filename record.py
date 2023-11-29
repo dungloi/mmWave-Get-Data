@@ -18,6 +18,8 @@ record_duration_s = 5
 if __name__ == '__main__':\
     # debug info
     Utils.logging.DEBUG_ON = 0
+    os.makedirs('Log', exist_ok=True)
+    os.makedirs('Data', exist_ok=True)
     
     # modify data recorded path in DCA1000 json config file
     with open(DCA1000_config_file, 'r') as file:

@@ -6,12 +6,8 @@ from Utils.logging import Logger
 class dca1000_ethernet():
     
     def __init__(self, configFile = "DCA1000/CLI/configFile.json", logDir = "Log"):
-        self.ws_path = os.getcwd()
-        
-        self.cli_path = os.path.join(self.ws_path, "DCA1000/CLI")                         
-        self.cli_control = os.path.join(self.ws_path, "DCA1000/CLI/DCA1000EVM_CLI_Control")
-        self.config = os.path.join(self.ws_path, configFile) 
-        
+        self.cli_control = os.path.join(os.getcwd(), "DCA1000/CLI/DCA1000EVM_CLI_Control")
+        self.config = os.path.join(os.getcwd(), configFile)        
         self.log = Logger("DCA1000EVM_CLI_Ethernet", logDir).logger
 
 
@@ -72,9 +68,8 @@ class dca1000_ethernet():
             
             
     def start_record(self):
-        os.chdir(self.cli_path)
-        
         result = subprocess.Popen(self.cli_control + " start_record " + self.config,
+                                cwd=os.path.join(os.getcwd(), "DCA1000/CLI"),
                                 stdin=subprocess.PIPE,
                                 stderr=subprocess.PIPE, 
                                 stdout=subprocess.PIPE, 
@@ -89,12 +84,8 @@ class dca1000_ethernet():
         else:
             print("Record Started")
             
-        os.chdir(self.ws_path)
-            
             
     def stop_record(self):
-        os.chdir(self.cli_path)
-        
         result = subprocess.Popen(self.cli_control + " stop_record " + self.config,
                                 stdin=subprocess.PIPE,
                                 stderr=subprocess.PIPE, 
@@ -108,11 +99,6 @@ class dca1000_ethernet():
             self.log.error(error)
         else:
             print("Record Ended")
-            
-        self.record_process.send_signal(signal.SIGKILL)
-        self.record_process = None
-            
-        os.chdir(self.ws_path)
         
             
     def config_record_delay(self):
@@ -219,19 +205,6 @@ class dca1000_ethernet():
         self.config_record_delay()
         # self.config_eeprom()
 
-        # get version
-        self.get_dll_version()
-        self.get_fpga_version()
-        self.get_cli_version()
-        
-        
-    def reset(self):
-        # config
-        self.reset_fpga()
-        self.reset_ar_device()
-        self.config_fpga()
-        self.config_record_delay()
-        
         # get version
         self.get_dll_version()
         self.get_fpga_version()
