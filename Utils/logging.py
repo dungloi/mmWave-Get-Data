@@ -24,12 +24,16 @@ log_colors_config = {
     'CRITICAL': 'bold_red',
 }
 
+DEBUG_ON = 0
 
 class Logger(object):
     
     def __init__(self, logger, log_path="Log"):
         self.logger = logging.getLogger(name=logger)
-        self.logger.setLevel(logging.DEBUG)
+        if DEBUG_ON:
+            self.logger.setLevel(logging.DEBUG)
+        else:
+            self.logger.setLevel(logging.NOTSET)
         self.logPath = log_path
 
         # create log file
@@ -53,6 +57,7 @@ class Logger(object):
                 datefmt='%Y-%m-%d  %H:%M:%S')
             file_handler.setFormatter(file_formatter)
             self.logger.addHandler(file_handler)
+
 
 if __name__ == '__main__':
     log = Logger("LOGTEST").logger

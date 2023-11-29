@@ -1,4 +1,5 @@
-import subprocess, time, json
+import subprocess, time, json, os
+import Utils.logging
 from DCA1000 import dca1000_cmd
 from xWR6843 import xWR6843_cmd
 
@@ -14,8 +15,18 @@ log_dir = "Log"
 
 record_duration_s = 5
 
+if __name__ == '__main__':\
+    # debug info
+    Utils.logging.DEBUG_ON = 0
+    
+    # modify data recorded path in DCA1000 json config file
+    with open(DCA1000_config_file, 'r') as file:
+        dca1000_json_data = json.load(file)
+    dca1000_json_data['DCA1000Config']['captureConfig']['fileBasePath'] = os.path.join(os.getcwd(), 'Data')
+    with open(DCA1000_config_file, 'w') as file:
+        json.dump(dca1000_json_data, file, indent=2)
 
-if __name__ == '__main__':
+    # USB device permission
     permission_command = f"sudo chmod 777 {xWR6843_config_port} {xWR6843_data_port}"
     subprocess.run(permission_command, shell=True)
     
@@ -59,8 +70,5 @@ if __name__ == '__main__':
     dca1000.stop_record()
     iwr6843.sensor_stop()
     iwr6843.serial_close()
-    
-    with open("./" + DCA1000_config_file, 'rt') as file:
-        dca1000_json_data = json.load(file)
-    data_dir = dca1000_json_data.get("DCA1000Config", {}).get("captureConfig", {}).get("fileBasePath")
-    print(f"Data Recorded in {data_dir}")
+
+    print(f"Data Recorded in {os.getcwd() + '/Data'}")

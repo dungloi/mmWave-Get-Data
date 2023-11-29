@@ -19,7 +19,7 @@
       "DCA1000DataPort": 4098
     },
     "captureConfig": {
-      "fileBasePath": "/home/dungloi/mmwave_ws/GetData/Data",
+      "fileBasePath": "/home/nv/mmwave_ws/GetData/Data",
       "filePrefix": "raw_data",
       "maxRecFileSize_MB": 1024,
       "sequenceNumberEnable": 1,

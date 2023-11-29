@@ -29,7 +29,7 @@ export LD_LIBRARY_PATH=/{your_ws}/DCA1000/CLI:$LD_LIBRARY_PATH
 #### Customize Your Params (IWR6843 Only)
 
 - modify ```xWR6843/config/iwr6843.cfg``` (If needed), but must ensure the parameter “lvdsStreamCfg -1 0 1 0”
-- modify ```DCA1000/CLI/configFile.json``` (If needed)
+- modify ```DCA1000/CLI/configFile.json``` (If needed), plz pay attention to the ```fileBasePath``` where data was saved
 - modify serial port in ```record.py``` in the format ```/dev/ttyUSB*```
 
 #### Start Collection

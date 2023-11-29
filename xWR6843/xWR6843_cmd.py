@@ -1,7 +1,6 @@
 import time
 import serial
 import serial.tools.list_ports
-import os
 from Utils.logging import Logger
 
 
@@ -71,16 +70,16 @@ class iwr6843_serial():
         self.dataPort_obj.reset_output_buffer()
         
 
-    def sensor_start(self):
-        self.cfgPort_obj.write(('sensorStart \n').encode())
-        time.sleep(0.5)
-        result = self.cfgPort_obj.read(self.cfgPort_obj.in_waiting).decode()
-        self.log.debug(result)
+    # def sensor_start(self):
+    #     self.cfgPort_obj.write(('sensorStart \n').encode())
+    #     time.sleep(0.2)
+    #     result = self.cfgPort_obj.read(self.cfgPort_obj.in_waiting).decode()
+    #     self.log.debug(result)
 
 
     def sensor_stop(self):
         self.cfgPort_obj.write(('sensorStop \n').encode())
-        time.sleep(0.5)
+        time.sleep(0.2)
         result = self.cfgPort_obj.read(self.cfgPort_obj.in_waiting).decode()
         self.log.debug(result)
 

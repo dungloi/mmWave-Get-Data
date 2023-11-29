@@ -1657,7 +1657,7 @@ SINT32 main(SINT32 argc, SINT8* argv[])
                 sprintf(s8DebugMsg, "./DCA1000EVM_CLI_Record start_record %s -q &",
                         s8CommandArg);
             else
-                sprintf(s8DebugMsg, "gnome-terminal -x ./DCA1000EVM_CLI_Record start_record %s",
+                sprintf(s8DebugMsg, "gnome-terminal -- ./DCA1000EVM_CLI_Record start_record %s", // modified by dungloi
                         s8CommandArg);
 #endif
             if(system(s8DebugMsg) == SUCCESS_STATUS)

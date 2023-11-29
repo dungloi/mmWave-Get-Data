@@ -83,7 +83,7 @@ class dca1000_ethernet():
         output, error = result.communicate()
         self.record_process = result
         
-        # self.log.debug(output)
+        self.log.debug(output)
         if error:
             self.log.error(error)
         else:
@@ -103,7 +103,7 @@ class dca1000_ethernet():
                                 shell=True)
         output, error = result.communicate()
         
-        # self.log.debug(output)
+        self.log.debug(output)
         if error:
             self.log.error(error)
         else:
