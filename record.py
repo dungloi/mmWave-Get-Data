@@ -23,8 +23,8 @@ if __name__ == '__main__':\
     with open(DCA1000_config_file, 'r') as file:
         dca1000_json_data = json.load(file)
     dca1000_json_data['DCA1000Config']['captureConfig']['fileBasePath'] = os.path.join(os.getcwd(), 'Data')
-    with open(DCA1000_config_file, 'w') as file:
-        json.dump(dca1000_json_data, file, indent=2)
+    with open(DCA1000_config_file, 'w') as new_file:
+        json.dump(dca1000_json_data, new_file, indent=2)
 
     # USB device permission
     permission_command = f"sudo chmod 777 {xWR6843_config_port} {xWR6843_data_port}"
@@ -60,9 +60,14 @@ if __name__ == '__main__':\
     # msg, server = data_socket.recvfrom(2048)
     # print("msg", msg)
 
+    # ts
+    dca1000_json_data['DCA1000Config']['captureConfig']['filePrefix'] = time.time()
+    json.dump(dca1000_json_data, new_file, indent=2)
+    
     # DCA1000EVM start record
     dca1000.start_record()
     print(f"duration: {record_duration_s} s")
+
 
     time.sleep(record_duration_s)
 
