@@ -3,8 +3,6 @@ import Utils.logging
 from DCA1000 import dca1000_cmd
 from xWR6843 import xWR6843_cmd
 
-import re
-
 xWR6843_config_port = "/dev/ttyUSB0"
 xWR6843_data_port = "/dev/ttyUSB1"
 
@@ -46,8 +44,9 @@ if __name__ == '__main__':
     time.sleep(2)
 
     # ts
-    dca1000_json_data['DCA1000Config']['captureConfig']['filePrefix'] = time.time()
-    json.dump(dca1000_json_data, file, indent=2)   
+    # dca1000_json_data['DCA1000Config']['captureConfig']['filePrefix'] = time.time()
+    # json.dump(dca1000_json_data, file, indent=2)   
+    
     # DCA1000EVM start record
     dca1000.start_record()
     
