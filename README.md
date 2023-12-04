@@ -1,8 +1,4 @@
-# Get mmWave Radar Data through DCA1000 + xWR6843
-
-## Intro 
-
-This repository:
+# Get xWR6843 Data through DCA1000_CLI
 
   - Use serial port to send cfg parameters to xWR6843 
   - Use DCA1000EVM_CLI_Control executable file to configure DCA1000 parameters
@@ -40,6 +36,6 @@ run
 python3 record.py
 ```
 
-## Acknowledgements
+## Acknowledgement
 
 [xWR6843_dataCollection](https://github.com/fanl0228/xWR6843_dataCollection)

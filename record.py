@@ -5,8 +5,6 @@ from xWR6843 import xWR6843_cmd
 
 import re
 
-# import socket
-
 xWR6843_config_port = "/dev/ttyUSB0"
 xWR6843_data_port = "/dev/ttyUSB1"
 
@@ -47,6 +45,9 @@ if __name__ == '__main__':
     iwr6843.sensor_start()
     time.sleep(2)
 
+    # ts
+    dca1000_json_data['DCA1000Config']['captureConfig']['filePrefix'] = time.time()
+    json.dump(dca1000_json_data, file, indent=2)   
     # DCA1000EVM start record
     dca1000.start_record()
     
