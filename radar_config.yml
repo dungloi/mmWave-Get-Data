@@ -1,0 +1,352 @@
+# config file for xWR18xx / xWR68xx
+sensorStop: 1
+flushCfg: 1
+
+dfeDataOutputMode:
+    modeType:
+        1 # 1 - frame based chirps
+        # 3 - advanced frame config
+
+channelCfg:
+    rxChannelEn: 15 # 0x1111b, 4 antennas supported
+    txChannelEn: 5 # For example, in IWR6843 ISK, the 2 azimuth antennas can be enabled using bitmask 0x5 (i.e. tx1 and tx3). The azimuth and elevation antennas can both be enabled using bitmask 0x7 (i.e.tx1, tx2 and tx3).
+    cascading: 0
+
+adcCfg:
+    numADCBits: 2 # only 16-bit is supported
+    adcOutputFmt:
+        1 # 1 - complex 1x (image band filtered output)
+        # 2 - complex 2x (image band visible)
+
+adcbufCfg:
+    subFrameIdx:
+        -1 # For legacy mode, that field should be set to -1
+        # For advanced frame mode, it should be set to either the intended subframe number or -1 to apply fame config to all subframes
+    adcOutputFmt: 0
+    SampleSwap: 1
+    ChanInterleave: 1
+    ChirpThreshold: 1 # xwr64xx/xwr68xx/xwr18xx: only value of 1 is supported since these demos use HWA for 1D FFT
+
+profileCfg:
+    profile_0:
+        profileId:
+            0 # Legacy frame (dfeOutputMode=1): could be any allowed value but only one valid profile per config is supported
+            # Advanced frame (dfeOutputMode=3): could be any allowed value but only one profile per subframe is supported. However, different subframes can have different profiles
+        startFreq: 77.0 # GHz
+        idleTime: 100.0 # u-sec
+        adcStartTime: 6.0 # u-sec
+        rampEndTime: 60 # u-sec
+        txOutPower: 0 # Tx output power back-off code for tx antennas
+        txPhaseShifter: 0 # Tx phase shifter for tx antennas
+        freqSlopeConst: 29.982 # MHz/usec, any value greater than 0
+        txStartTime: 0 # u-sec
+        numAdcSamples: 256 # number of ADC samples collected during "ADC Sampling Time"
+        digOutSampleRate:
+            10000 # ADC sampling frequency in ksps.
+            # numAdcSamples / digOutSampleRate = "ADC Sampling Time"
+        hpfCornerFreq1:
+            0 # HPF1 (High Pass Filter 1) corner frequency
+            # 0: 175 KHz
+            # 1: 235 KHz
+            # 2: 350 KHz
+            # 3: 700 KHz
+        hpfCornerFreq2:
+            0 # HPF2 (High Pass Filter 2) corner frequency
+            # 0: 350 KHz
+            # 1: 700 KHz
+            # 2: 1.4 MHz
+            # 3: 2.8 MHz
+        rxGain: 30 # OR'ed value of RX gain in dB and RF gain target
+
+chirpCfg:
+    # Individual chirps should have either only one distinct Tx antenna enabled (MIMO) or same TX antennas should be enabled for all chirps
+    config_info_0: # this is customized set and modified by user
+        chirp start index: 0
+        chirp end index: 0
+        profile identifier: 0 # should match the profileCfg->profileId
+        start frequency variation: 0 # Hz
+        frequency slope variation: 0 # kHz/us
+        idle time variation: 0 # u-sec
+        ADC start time variation: 0 # u-sec
+        tx antenna enable mask: 1 # Tx3, Tx2, Tx1. e.g (010)b = Tx3 disabled, Tx2 enabled, Tx1 disabled.
+    config_info_1: # this is customized set and modified by user
+        chirp start index: 1
+        chirp end index: 1
+        profile identifier: 0
+        start frequency variation: 0 # Hz
+        frequency slope variation: 0 # kHz/us
+        idle time variation: 0 # u-sec
+        ADC start time variation: 0 # u-sec
+        tx antenna enable mask: 4 # Tx3, Tx2, Tx1.
+
+lowPower:
+    NOP: 0
+    ADC Mode:
+        0 # 0x00 : Regular ADC mode
+        # 0x01 : Low power ADC mode (Not supported for xwr6xxx devices)
+
+frameCfg:
+    chirpStartIdx: 0 # 0-511, corresponding chirpCfg should be defined
+    chirpEndIdx: 1 # same as start index
+    numLoops:
+        64 # 4-255.
+        # For xwr16xx/xwr68xx demos where DSP version of Doppler DPU is used, the Doppler chirps (i.e. number of loops) should be a multiple of 4 due to windowing requirement.
+    numFrames: 0 # 0-65535, 0 means infinite
+    framePeriodicity: 100 # ms
+    triggerMode:
+        1 # 1: Software trigger
+        # 2: Hardware trigger.
+    frameTriggerDelay: 0 # ms
+
+# with sub frames -------------------------------------------------------------
+advFrameCfg:
+    numOfSubFrames: 0 # Number of sub frames enabled in this frame
+    forceProfile: 0
+    numFrames: 0 # Number of frames to transmit (1 frame = all enabled sub frames)
+    triggerMode:
+        1 # 1: Software trigger
+        # 2: Hardware trigger.
+    frameTriggerDelay: 0 # ms
+
+subFrameCfg:
+    subFrameNum: 0 # range from 0 to RL_MAX_SUBFRAMES-1
+    forceProfileIdx: 0
+    chirpStartIdx: 0 # corresponding chirpCfg should be defined
+    numOfChirps: 0 # num of unique Chirps per burst including start index
+    numLoops: 0 # greater than 4. no. of times to loop through the unique chirps
+    burstPeriodicity:
+        0 # msec
+        # burstPeriodicity larger than ((numLoops)* (Sum total of time duration of all unique chirps in that burst)) + InterBurstBlankTime
+    chirpStartIdxOffset: 0
+    numOfBurst: 1
+    numOfBurstLoops: 1
+    subFramePeriodicity: 0 # same as burstPeriodicity
+# -----------------------------------------------------------------------------
+
+guiMonitor:
+    subFrameIdx:
+        -1 # For legacy mode, that field should be set to -1;
+        # for advanced frame mode, it should be set to either the intended subframe number or -1 to apply same config to all subframes.
+    detected objects:
+        0 # 1 - enable export of point cloud (x,y,z,doppler) and point cloud side info (SNR, noiseval)
+        # 2 - enable export of point cloud (x,y,z,doppler)
+        # 0 - disable
+    log magnitude range:
+        0 # 1 - enable export of log magnitude range profile at zero Doppler
+        # 0 - disable
+    noise profile:
+        0 # 1 - enable export of log magnitude noise profile
+        # 0 - disable
+    rangeAzimuthHeatMap:
+        0 # This output is provided only in demos that use AoA (legacy) DPU for AoA processing
+        # 1 - enable export of zero Doppler radar cube matrix, all range bins, all azimuth virtual antennas to calculate and display azimuth heat map. (The GUI computes the FFT of this to show heat map)
+        # 0 - disable
+        # or: rangeAzimuthElevationHeatMap
+        # This output is provided in demos that use AoA 2D DPU for AoA processing (ex: mmW demo for IWR6843AOP)
+        # 1 - enable export of zero Doppler radar cube matrix, all range bins, all virtual antennas to calculate and display azimuth heat map. (The GUI remaps the antenna symbols and computes the FFT of this stream to show azimuth heat map only).
+        # 0 - disable
+    rangeDopplerHeatMap:
+        0 # 1 - enable export of the whole detection matrix. Note that the frame period should be djusted according to UART transfer time.
+        # 0 - disable
+    statsInfo:
+        0 # statistics (CPU load, margins, device temperature readings, etc)
+        # 1 - enable export of stats data.
+        # 0 - disable
+
+cfarCfg:
+    # 2 separate commands need to be sent; one for Range and other for doppler.
+    range:
+        subFrameIdx:
+            -1 # For legacy mode, that field should be set to -1;
+            # for advanced frame mode, it should be set to either the intended subframe number or -1 to apply same config to all subframes.
+        procDirection:
+            0 # 0 - CFAR detection in range direction
+            # 1 - CFAR detection in Doppler direction
+        mode:
+            2 # CFAR averaging mode
+            # 0 - CFAR_CA (Cell Averaging)
+            # 1 - CFAR_CAGO (Cell Averaging Greatest Of)
+            # 2 - CFAR_CASO (Cell Averaging  Smallest Of) all values supported
+        noiseWin: 8 # noise averaging window length...
+        guardLen: 4 # ...
+        divShift: 3 # ...
+        cyclic mode or Wrapped around mode:
+            0 # 0 - Disabled
+            # 1 - Enabled
+        threshold scale: 15.0 # dB, ...
+        peak grouping:
+            0 # 0 - Disabled
+            # 1 - Enabled
+    doppler:
+        subFrameIdx:
+            -1 # For legacy mode, that field should be set to -1;
+            # for advanced frame mode, it should be set to either the intended subframe number or -1 to apply same config to all subframes.
+        procDirection:
+            1 # 0 - CFAR detection in range direction
+            # 1 - CFAR detection in Doppler direction
+        mode:
+            0 # CFAR averaging mode
+            # 0 - CFAR_CA (Cell Averaging)
+            # 1 - CFAR_CAGO (Cell Averaging Greatest Of)
+            # 2 - CFAR_CASO (Cell Averaging  Smallest Of) all values supported
+        noiseWin: 4 # noise averaging window length...
+        guardLen: 2 # ...
+        divShift: 3 # ...
+        cyclic mode or Wrapped around mode:
+            1 # 0 - Disabled
+            # 1 - Enabled
+        threshold scale: 15.0 # dB, ...
+        peak grouping:
+            0 # 0 - Disabled
+            # 1 - Enabled
+
+multiObjBeamForming:
+    subFrameIdx:
+        -1 # For legacy mode, that field should be set to -1;
+        # for advanced frame mode, it should be set to either the intended subframe number or -1 to apply same config to all subframes.
+    Feature Enabled:
+        0 # 0 - Disabled
+        # 1 - Enabled
+    threshold: 0.5 # ...
+
+calibDcRangeSig:
+    subFrameIdx:
+        -1 # For legacy mode, that field should be set to -1;
+        # for advanced frame mode, it should be set to either the intended subframe number or -1 to apply same config to all subframes.
+    DC removal:
+        0 # Enable DC removal using first few chirps
+        # 0 - Disabled
+        # 1 - Enabled
+    negativeBinIdx: -5 # negative Bin Index (to remove DC from farthest range bins)...
+    positiveBinIdx: 8 # positive Bin Index (to remove DC from closest range bins)...
+    numAvg: 256 # number of chirps to average to collect DC signature...
+
+clutterRemoval:
+    subFrameIdx:
+        -1 # For legacy mode, that field should be set to -1;
+        # for advanced frame mode, it should be set to either the intended subframe number or -1 to apply same config to all subframes.
+    enabled:
+        0 # Enable static clutter removal technique
+        # 0 - disabled
+        # 1 - enabled
+
+aoaFovCfg:
+    subFrameIdx:
+        -1 # For legacy mode, that field should be set to -1;
+        # for advanced frame mode, it should be set to either the intended subframe number or -1 to apply same config to all subframes.
+    minAzimuthDeg: -90 # minimum azimuth angle (in degrees) that specifies the start of field of view
+    maxAzimuthDeg: 90 # the same
+    minElevationDeg: -90 # the same
+    maxElevationDeg: 90 # the same
+
+cfarFovCfg:
+    # this command should be given twice-one for range direction and other for doppler direction
+    range:
+        subFrameIdx:
+            -1 # For legacy mode, that field should be set to -1;
+            # for advanced frame mode, it should be set to either the intended subframe number or -1 to apply same config to all subframes.
+        procDirection:
+            0 # 0 - point filtering in range direction
+            # 1 - point filtering in doppler direction
+        min: 0.1 # meters for Range direction, minimum limits for the range or doppler below which the detected points are filtered out
+        max: 8.64
+    doppler:
+        subFrameIdx:
+            -1 # For legacy mode, that field should be set to -1;
+            # for advanced frame mode, it should be set to either the intended subframe number or -1 to apply same config to all subframes.
+        procDirection:
+            1 # 0 - point filtering in range direction
+            # 1 - point filtering in doppler direction
+        min: -10.59 # meters/sec for Doppler direction, minimum limits for the range or doppler below which the detected points are filtered out
+        max: 10.59
+
+compRangeBiasAndRxChanPhase:
+    rangeBias: 0.0 # Compensation for range estimation bias in meters
+    data:
+        "1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0"
+        # <Re(0,0)> <Im(0,0)> <Re(0,1)> <Im(0,1)> ... <Re(0,R-1)> <Im(0,R-1)><Re(1,0)> <Im(1,0)> ... <Re(T-1,R-1)> <Im(T-1,R-1)>
+        # Set of Complex value representing compensation for virtual Rx channel phase bias in Q15 format.
+        # Pairs of I and Q should be provided for all Tx and Rx antennas in the device
+        # For xwr1843, xwr6843 and xwr6443 demos: 12 pairs of values should be provided here since the device has 4 Rx and 3 Tx (total of 12 virtual antennas).
+
+measureRangeBiasAndRxChanPhase:
+    enabled:
+        0 # 1 - enable measurement. This parameter should be enabled only using the rofile_calibration.cfg profile in the mmW demo profiles directory
+        # 0 - disable measurement. ...
+    targetDistance: 1.0 # ...
+    searchWin: 0.2 # ...
+
+extendedMaxVelocity:
+    # Only disabled is supported for xwr64xx demo running on IWR6843AOP device
+    subFrameIdx:
+        -1 # For legacy mode, that field should be set to -1;
+        # for advanced frame mode, it should be set to either the intended subframe number or -1 to apply same config to all subframes.
+    enabled:
+        0 # Enable velocity disambiguation technique
+        # 0 - disabled
+        # 1 - enabled
+
+CQRxSatMonitor:
+    profile:
+        0 # Valid profile Id for this monitoring configuraiton.
+        # This profile ID should have a matching profileCfg
+    satMonSel: 3 # RX Saturation monitoring mode
+    priSliceDuration: 11 # Duration of each slice, 1LSB=0. 16us, range: 4 - number of ADC samples
+    numSlices: 121 # primary + secondary slices ,range 1-127. Maximum primary slice is 64
+    rxChanMask: 0 # RX channel mask, 1 - Mask, 0 - unmask
+
+CQSigImgMonitor:
+    profile:
+        0 # Valid profile Id for this monitoring configuraiton.
+        # This profile ID should have a matching profileCfg
+    numSlices: 127 # primary + secondary slices, range 1-127. Maximum primary slice is 64.
+    numSamplePerSlice: 4 # Possible range is 4 to "number of ADC samples" in the corresponding profileCfg. It must be an even number.
+
+analogMonitor:
+    rxSaturation:
+        0 # CQRxSatMonitor enable/disable
+        # 1: enable
+        # 0: disable
+    sigImgBand:
+        0 # CQSigImgMonitor enable/disable
+        # 1: enable
+        # 0: disable
+
+lvdsStreamCfg:
+    subFrameIdx:
+        -1 # For legacy mode, that field should be set to -1;
+        # for advanced frame mode, it should be set to either the intended subframe number or -1 to apply same config to all subframes.
+    enableHeader:
+        0 # 0 - Disable HSI header for all active streams
+        # 1 - Enable HSI header for all active streams
+    dataFmt:
+        1 # Controls HW streaming. Specifies the HW streaming data format.
+        # 0-HW STREAMING DISABLED
+        # 1-ADC
+        # 4-CP_ADC_CQ  When choosing CP_ADC_CQ, please ensure that CQRxSatMonitor and CQSigImgMonitor commands are provided with appropriate values and these monitors are enabled using analogMonitor command.
+    enableSW:
+        0 # 0 - Disable user data (SW session)
+        # 1 - Enable user data (SW session) <enableHeader> should be set to 1 when this field is enabled.
+
+# should not be set when using xWR18xx ------------------------------------
+bpmCfg:
+    # This config is supported and mandatory only for demos that use Doppler DSP DPU (xwr16xx/xwr68xx). This config is not supported and is not needed for demos that use Doppler HWA DPU (xwr18xx/xwr64xx).
+    subFrameIdx:
+        -1 # For legacy mode, that field should be set to -1;
+        # for advanced frame mode, it should be set to either the intended subframe number or -1 to apply same config to all subframes.
+    enabled: 0
+    chirp0Idx: 0 # ...
+    chirp1Idx: 0 # ...
+# -------------------------------------------------------------------------
+
+calibData:
+    # Boot time RF calibration save/restore command.
+    save enable:
+        0 # 0 - Save enabled.
+        # 1 - Save disabled. ...
+    restore enable:
+        0 # 0 - Restore enabled.
+        # 1 - Restore disabled. ...
+    Flash offset: 0 # Address offset in the flash to be used while saving or restoring calibration data. ...
+
+sensorStart: 1
