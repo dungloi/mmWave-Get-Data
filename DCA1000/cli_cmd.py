@@ -1,17 +1,15 @@
 import subprocess
-import os, signal
+import os, time
 from Utils.logging import Logger
 
 
-class dca1000_ethernet:
-    def __init__(self, configFile="DCA1000/CLI/configFile.json", logDir="Log"):
-        self.cli_control = os.path.join(
-            os.getcwd(), "DCA1000/CLI/DCA1000EVM_CLI_Control"
-        )
-        self.config = os.path.join(os.getcwd(), configFile)
-        self.log = Logger("DCA1000EVM_CLI_Ethernet", logDir).logger
+class DCA1000CLI:
+    def __init__(self, config_file="DCA1000/CLI/configFile.json", log_dir="Log"):
+        self.cli_control = os.path.join(os.getcwd(), "DCA1000/CLI/DCA1000EVM_CLI_Control")
+        self.config = os.path.join(os.getcwd(), config_file)
+        self.log = Logger("DCA1000EVM_CLI_Ethernet", log_dir).logger
 
-    def config_fpga(self):
+    def configFpga(self):
         result = subprocess.Popen(
             self.cli_control + " fpga " + self.config,
             stdin=subprocess.PIPE,
@@ -26,7 +24,7 @@ class dca1000_ethernet:
         if error:
             self.log.error(error)
 
-    def config_eeprom(self):
+    def configEeprom(self):
         result = subprocess.Popen(
             self.cli_control + " eeprom " + self.config,
             stdin=subprocess.PIPE,
@@ -41,7 +39,7 @@ class dca1000_ethernet:
         if error:
             self.log.error(error)
 
-    def reset_fpga(self):
+    def resetFpga(self):
         result = subprocess.Popen(
             self.cli_control + " reset_fpga " + self.config,
             stdin=subprocess.PIPE,
@@ -56,7 +54,7 @@ class dca1000_ethernet:
         if error:
             self.log.error(error)
 
-    def reset_ar_device(self):
+    def resetArDevice(self):
         result = subprocess.Popen(
             self.cli_control + " reset_ar_device " + self.config,
             stdin=subprocess.PIPE,
@@ -71,7 +69,7 @@ class dca1000_ethernet:
         if error:
             self.log.error(error)
 
-    def start_record(self):
+    def startRecord(self):
         result = subprocess.Popen(
             self.cli_control + " start_record " + self.config,
             cwd=os.path.join(os.getcwd(), "DCA1000/CLI"),
@@ -90,7 +88,7 @@ class dca1000_ethernet:
         else:
             print("Record Started")
 
-    def stop_record(self):
+    def stopRecord(self):
         result = subprocess.Popen(
             self.cli_control + " stop_record " + self.config,
             stdin=subprocess.PIPE,
@@ -107,7 +105,7 @@ class dca1000_ethernet:
         else:
             print("Record Ended")
 
-    def config_record_delay(self):
+    def configRecordDelay(self):
         result = subprocess.Popen(
             self.cli_control + " record " + self.config,
             stdin=subprocess.PIPE,
@@ -122,7 +120,7 @@ class dca1000_ethernet:
         if error:
             self.log.error(error)
 
-    def get_dll_version(self):
+    def getDllVersion(self):
         result = subprocess.Popen(
             self.cli_control + " dll_version " + self.config,
             stdin=subprocess.PIPE,
@@ -137,7 +135,7 @@ class dca1000_ethernet:
         if error:
             self.log.error(error)
 
-    def get_fpga_version(self):
+    def getFpgaVersion(self):
         result = subprocess.Popen(
             self.cli_control + " fpga_version " + self.config,
             stdin=subprocess.PIPE,
@@ -152,7 +150,7 @@ class dca1000_ethernet:
         if error:
             self.log.error(error)
 
-    def get_cli_version(self):
+    def getCliVersion(self):
         result = subprocess.Popen(
             self.cli_control + " cli_version " + self.config,
             stdin=subprocess.PIPE,
@@ -167,7 +165,7 @@ class dca1000_ethernet:
         if error:
             self.log.error(error)
 
-    def query_status(self):
+    def queryStatus(self):
         result = subprocess.Popen(
             self.cli_control + " query_status " + self.config,
             stdin=subprocess.PIPE,
@@ -182,7 +180,7 @@ class dca1000_ethernet:
         if error:
             self.log.error(error)
 
-    def query_sys_status(self):
+    def querySysStatus(self):
         result = subprocess.Popen(
             self.cli_control + " query_sys_status " + self.config,
             stdin=subprocess.PIPE,
@@ -214,12 +212,14 @@ class dca1000_ethernet:
 
     def initialize(self):
         # get version
-        self.get_dll_version()
-        self.get_cli_version()
+        self.getDllVersion()
+        self.getCliVersion()
 
         # config
-        self.reset_ar_device()
-        self.reset_fpga()
-        self.config_fpga()
-        self.config_eeprom()
-        self.config_record_delay()
+        self.resetArDevice()
+        self.resetFpga()
+        self.configFpga()
+        self.configEeprom()
+        self.configRecordDelay()
+
+        time.sleep(0.5)

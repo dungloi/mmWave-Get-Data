@@ -20,12 +20,12 @@
     },
     "captureConfig": {
       "fileBasePath": "/home/dungloi/mmwave_ws/mmWave-Get-Data/Data",
-      "filePrefix": 1703001029.0431333,
+      "filePrefix": 1703263179.5565615,
       "maxRecFileSize_MB": 1024,
       "sequenceNumberEnable": 0,
-      "captureStopMode": "bytes",
-      "bytesToCapture": 524288,
-      "durationToCapture_ms": 2000,
+      "captureStopMode": "duration",
+      "bytesToCapture": 541888,
+      "durationToCapture_ms": 10000,
       "framesToCapture": 40
     },
     "dataFormatConfig": {

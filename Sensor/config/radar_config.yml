@@ -32,13 +32,13 @@ profileCfg:
         profileId:
             0 # Legacy frame (dfeOutputMode=1): could be any allowed value but only one valid profile per config is supported
             # Advanced frame (dfeOutputMode=3): could be any allowed value but only one profile per subframe is supported. However, different subframes can have different profiles
-        startFreq: 77.0 # GHz
+        startFreq: 77.0 # GHz xWR18xx = 77, xWR68xx = 60
         idleTime: 100.0 # u-sec
         adcStartTime: 6.0 # u-sec
         rampEndTime: 60 # u-sec
         txOutPower: 0 # Tx output power back-off code for tx antennas
         txPhaseShifter: 0 # Tx phase shifter for tx antennas
-        freqSlopeConst: 29.982 # MHz/usec, any value greater than 0
+        freqSlopeConst: 29.9817 # MHz/usec, any value greater than 0
         txStartTime: 0 # u-sec
         numAdcSamples: 256 # number of ADC samples collected during "ADC Sampling Time"
         digOutSampleRate:

@@ -1,13 +1,11 @@
-# Collecting ADC Raw Data from xWR6843 / xWR1843
+# Collecting ADC Raw Data from xWR68xx / xWR18xx
 
-  - Use serial port to send cfg parameters to xWR6843 / xWR1843
+  - Use serial port to send cfg parameters to xWR68xx / xWR18xx
   - Support using both DCA1000EVM_CLI_Control executable file and UDP packets through ethernet to send commands
 
-## Quick Start
+## Quick Start for Linux
 
-### Linux
-
-#### Setup
+### Setup
 
 ```
 pip install -r requirements.txt
@@ -21,19 +19,32 @@ add the path ```/{your_ws}/DCA1000/CLI``` to ```$LD_LIBRARY_PATH``` in ```~/.bas
 export LD_LIBRARY_PATH=/{your_ws}/DCA1000/CLI:$LD_LIBRARY_PATH
 ```
 
-#### Customize Your Params
+### Customize Your Params
 
-- modify ```Radar/config/*.cfg``` (If needed), but must ensure the parameter “lvdsStreamCfg -1 0 1 0”
-- modify ```DCA1000/CLI/configFile.json``` (If needed), notice that the data path will be automatically set
-- modify serial port in ```record.py``` in ```/dev/ttyUSB*``` format
+- modify ```Sensor/config/*.cfg``` (If needed), but must ensure the parameter “lvdsStreamCfg -1 0 1 0”
+- modify ```DCA1000/CLI/configFile.json``` (If needed), notice that the data path, capture mode and data prefix (if enable timestamp record) will be automatically set
+- modify serial port in ```/dev/tty*``` format, * = ACM (xWR18xx) or USB (xWR68xx) 
 
-#### Start Collection
+### Start Collection
 
-run
+run the scripts like this: ```python3 radar_recprd.py -d 10```
 
 ```
-python3 record.py
+usage: radar_recorder.py [-h] [-d DURATION] [-b BYTES] [-i INFINITE]
+optional arguments:
+  -h, --help            show this help message and exit
+  -d DURATION, --duration DURATION
+                        Record duration in second
+  -b BYTES, --bytes BYTES
+                        Record bytes
+  -i INFINITE, --infinite INFINITE
+                        Infinite recording mode with max duration 1 s
 ```
+If no arguments are provided, the code will default to an infinite record mode. The default max duration can be set by user in radar_recorder.py.
+
+### Attention
+
+The data will be transmitted in Q-in-LSB and I-in-MSB order, and cannot be modified. This format is opposite to the data collected by default configuration in mmWave Studio, and requires special handling.
 
 ## Acknowledgement
 
