@@ -80,13 +80,13 @@ class SensorSerial:
         self.cfg_port_obj.write(("sensorStart \n").encode())
         result = self.cfg_port_obj.read(self.cfg_port_obj.in_waiting).decode()
         self.log.debug(result)
-        time.sleep(0.2)
+        time.sleep(0.1)
 
     def sensorStop(self):
         self.cfg_port_obj.write(("sensorStop \n").encode())
         result = self.cfg_port_obj.read(self.cfg_port_obj.in_waiting).decode()
         self.log.debug(result)
-        time.sleep(0.2)
+        time.sleep(0.1)
 
     def sensorInitialize(self):
         self.serialOpen()

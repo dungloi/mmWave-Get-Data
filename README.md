@@ -12,8 +12,8 @@ pip install -r requirements.txt
 cd ./DCA1000_SDK && make clean && make && cd ..
 cp ./DCA1000_SDK/Release/DCA1000EVM_CLI_* ./DCA1000_SDK/Release/libRF_API.so ./DCA1000/CLI
 ```
-add the path ```/{your_ws}/DCA1000/CLI``` to ```$LD_LIBRARY_PATH``` in ```~/.bashrc```, like this:
- ```gedit ~/.bashrc```, add new lines(replace {your_ws} with your workspace path):
+add the path ```/{your_ws}/DCA1000/CLI``` to ```$LD_LIBRARY_PATH``` in ```~/.bashrc``` (or ```~/.zshrc``` if you are using zsh), like this:
+ ```gedit ~/.bashrc``` (```gedit ~/.zshrc```), add new lines(replace {your_ws} with your workspace path):
 
 ```
 export LD_LIBRARY_PATH=/{your_ws}/DCA1000/CLI:$LD_LIBRARY_PATH
@@ -27,7 +27,7 @@ export LD_LIBRARY_PATH=/{your_ws}/DCA1000/CLI:$LD_LIBRARY_PATH
 
 ### Start Collection
 
-run the scripts like this: ```python3 radar_recprd.py -d 10```
+run the scripts like this: ```python3 radar_recorder.py -d 10```
 
 ```
 usage: radar_recorder.py [-h] [-d DURATION] [-b BYTES] [-i INFINITE]

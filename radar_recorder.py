@@ -117,7 +117,7 @@ class RadarRecorder:
         sensor.sensorStop()
         sensor.serialClose()
 
-        print(f"\nIf tookits worked properly, the raw data was Recorded in: <work_space>/{self.data_path}")
+        print(f"\nIf tookits worked properly, the raw data was recorded in: ./{self.data_path}")
 
 
 Utils.logging.DEBUG_ON = 1
