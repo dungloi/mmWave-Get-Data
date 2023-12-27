@@ -63,8 +63,7 @@ class HardwareTrigger:
             print("Timeout. Trigger killed!")
 
     def __del__(self):
-        pass
-        # GPIO.cleanup()
+        GPIO.cleanup()
 
 
 if __name__ == "__main__":

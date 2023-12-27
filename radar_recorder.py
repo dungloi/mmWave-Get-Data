@@ -57,10 +57,10 @@ class RadarRecorder:
 
     def getDataCli(self, dca1000_cli_obj: DCA1000Cli, record_duration):
         dca1000_cli_obj.startRecord()
-        
+
         print(f"duration: {record_duration} s")
-        time.sleep(record_duration + 0.1)
-        
+        time.sleep(record_duration + 0.01)
+
         dca1000_cli_obj.stopRecord()
 
     def getDataSocket(self, stop_mode, stop_mode_param):
@@ -76,9 +76,9 @@ class RadarRecorder:
         dca1000_socket_obj.startRecord()
 
         if self.sensor_trigger_mode == "HW":
-            dca1000_socket_obj.client.settimeout(0.001) # one packet in a frame
+            dca1000_socket_obj.client.settimeout(0.001)  # one packet in a frame
             _ = open(dca1000_socket_obj.data_path + "_raw_udp_packets.bin", "wb")
-            
+
             # set up hardware trigger thread
             hw_trigger_obj = HardwareTrigger(DCA1000_TRIGGER_HIGH_DUR, self.frame_duration)
             trigger_event = threading.Event()
