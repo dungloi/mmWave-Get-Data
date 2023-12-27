@@ -3,7 +3,7 @@ import os, time
 from Utils.logging import Logger
 
 
-class DCA1000CLI:
+class DCA1000Cli:
     def __init__(self, config_file="DCA1000/CLI/configFile.json", log_dir="Log"):
         self.cli_control = os.path.join(os.getcwd(), "DCA1000/CLI/DCA1000EVM_CLI_Control")
         self.config = os.path.join(os.getcwd(), config_file)
@@ -223,3 +223,10 @@ class DCA1000CLI:
         self.configRecordDelay()
 
         time.sleep(0.5)
+
+    def closeControl(self, record_port):
+        # kill shell
+        x = os.popen(f"lsof -t -i:{record_port}").read().strip()
+        if x:
+            os.system(f"sudo kill -9 {x}")
+            print(f"pid: {x} killed. mmWave cli control closed successfully!")

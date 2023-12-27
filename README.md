@@ -38,9 +38,11 @@ optional arguments:
   -b BYTES, --bytes BYTES
                         Record bytes
   -i INFINITE, --infinite INFINITE
-                        Infinite recording mode with max duration 1 s
+                        Infinite recording mode with max duration * s
 ```
-If no arguments are provided, the code will default to an infinite record mode. The default max duration can be set by user in radar_recorder.py.
+If no arguments are provided, the code will default to an infinite record mode. The default max duration can be set by user in ```radar_recorder.py.```
+
+Besides, the password for current user account will be needed to provide permission for serial port configurations.
 
 ### Attention
 

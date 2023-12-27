@@ -5,7 +5,7 @@
         "dataCaptureMode": "ethernetStream",
         "lvdsMode": 2,
         "dataFormatMode": 3,
-        "packetDelay_us": 5,
+        "packetDelay_us": 25,
         "ethernetConfig": {
             "DCA1000IPAddress": "192.168.33.180",
             "DCA1000ConfigPort": 4096,
@@ -20,12 +20,12 @@
         },
         "captureConfig": {
             "fileBasePath": "/home/dungloi/mmwave_ws/mmWave-Get-Data/Data",
-            "filePrefix": 1703263179.5565615,
+            "filePrefix": "test",
             "maxRecFileSize_MB": 1024,
             "sequenceNumberEnable": 0,
             "captureStopMode": "infinite",
             "bytesToCapture": 541888,
-            "durationToCapture_ms": 10000,
+            "durationToCapture_ms": 5000.0,
             "framesToCapture": 40
         },
         "dataFormatConfig": {
