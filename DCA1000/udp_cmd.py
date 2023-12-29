@@ -67,7 +67,8 @@ class DCA1000Udp:
             return seq_num, raw_data
         except Exception as e:
             if isinstance(e, socket.timeout):
-                print(f"No LVDS data in transmission for {self.timeout_s} seconds")
+                if Utils.logging.DEBUG_ON:
+                    print(f"No LVDS data in transmission for {self.timeout_s} seconds")
                 return 0, None
             else:
                 print(f"error: {e}")

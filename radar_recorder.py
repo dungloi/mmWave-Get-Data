@@ -5,7 +5,7 @@ from DCA1000.cli_cmd import DCA1000Cli
 from DCA1000.udp_cmd import DCA1000Udp
 from Sensor.hardware_trigger import HardwareTrigger
 from Sensor.sensor_cmd import SensorSerial
-import Sensor.gen_cfg as gen_cfg
+import Sensor.cfg_gen as cfg_gen
 import threading
 
 
@@ -36,7 +36,7 @@ class RadarRecorder:
             json.dump(self.dca1000_json_data, file, indent=4)
 
         # gen config (.cfg) and read trigger mode
-        self.radar_cfg_obj = gen_cfg.gen_cfg(
+        self.radar_cfg_obj = cfg_gen.cfg_gen(
             self.MODEL,
             yaml_path,
             cfg_path,
@@ -92,7 +92,6 @@ class RadarRecorder:
             self.frame_duration,
         )
         dca1000_socket_obj.startRecord()
-        time.sleep(2)
 
         # config and start sensor
         sensor_obj = SensorSerial(radar_config_file, self.serial_cfg_port, self.serial_dta_port, log_dir)
@@ -171,8 +170,8 @@ class RadarRecorder:
         print(f"\nIf tookits worked properly, the raw data was recorded in: {os.path.join(os.getcwd(), self.data_path)}")
 
 
-Utils.logging.DEBUG_ON = 1
-DEFAULT_RECORD_DURATION = 2
+Utils.logging.DEBUG_ON = 0
+DEFAULT_RECORD_DURATION = 10
 DCA1000_TRIGGER_HIGH_DUR = 4e-6  # 5ns to 4us
 
 if __name__ == "__main__":

@@ -70,8 +70,8 @@ if __name__ == "__main__":
     cnt = 0
     pulse_dur = 0.1
 
-    def callback(cnt, ts):
-        print(f"trigger ts in sub thread: {ts}, num: {cnt}")
+    def callback(prefix, cnt, ts):
+        print(f"{prefix} {cnt}, trigger ts in sub thread: {ts}")
 
     trigger = HardwareTrigger(5e-6, pulse_dur)
     trigger_event = threading.Event()
