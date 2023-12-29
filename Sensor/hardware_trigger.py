@@ -54,7 +54,7 @@ class HardwareTrigger:
 
                 # call the time stamp writing callback
                 if callback:
-                    callback(self.trigger_cnt, trigger_time)
+                    callback("TRIGGERED No.",self.trigger_cnt, trigger_time)
 
                 self.trigger_cnt += 1
                 # Reset the event

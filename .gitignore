@@ -7,3 +7,5 @@ CLI_*.txt
 .vscode
 Release/
 Data/
+DCA1000EVM_CLI_*
+*.so

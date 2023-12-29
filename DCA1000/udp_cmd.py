@@ -11,8 +11,8 @@ UDP_CMD = {
     "RECORD_STOP": 0x06,
 }
 
-MAX_PACKET_SIZE = 1466  # 4 + 6 + 1456, error in "DCA1000EVM Data Capture Card User Guide"
-MAX_PACKET_DATA_SIZE = MAX_PACKET_SIZE - 10
+MAX_PACKET_SIZE = 1508  # HEADER + DATA = 1466 = 4 + 6 + 1456, there is an error in "DCA1000EVM Data Capture Card User Guide"
+MAX_PACKET_DATA_SIZE = 1456
 
 
 class DCA1000Udp:
@@ -26,22 +26,27 @@ class DCA1000Udp:
         self.data_bytes_cnt = 0
         self.timeout_s = timeout_s
         self.last_seq_num = 0
+        self.data_frames_cnt = 0
         # cmd
         self.server = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.server.bind((self.LOCAL_IP, self.CFG_PORT))
         # data
         self.client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.client.bind((self.LOCAL_IP, self.DTA_PORT))
-        self.client.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, MAX_PACKET_SIZE * 10 * 6000)
+        self.client.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, MAX_PACKET_SIZE * 1024)
+        bsize = self.client.getsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF)
         self.client.settimeout(self.timeout_s)
 
     def _paddingLostPackets(self, last_seq_num, curr_seq_num):
         zero_padding_len = (curr_seq_num - last_seq_num - 1) * MAX_PACKET_DATA_SIZE
         self.f_udp.write(b"\x00" * zero_padding_len)
 
-    def writeTimestamp(self, seq_num, ts):
+    def setTimeout(self, duration_s):
+        self.client.settimeout(duration_s)
+
+    def writeTimestamp(self, prefix, seq_num, ts):
         f_ts = open(self.data_path + "_ts.txt", "at")
-        info = f"packet {seq_num} time stamp: {str(ts)}"
+        info = f"{prefix} {seq_num:6}, time stamp: {str(ts)}"
         f_ts.write(info + "\n")
         if Utils.logging.DEBUG_ON:
             print(info)
@@ -50,14 +55,16 @@ class DCA1000Udp:
         try:
             udp_packet, _ = self.client.recvfrom(MAX_PACKET_SIZE)
 
-            # DATA format: SequenceNum(4) ByteCnt(6) RawData(48 - 1462)
+            # DATA format: SequenceNum(4) ByteCnt(6) RawData(48 - 1456)
             seq_num = int.from_bytes(udp_packet[0:4], byteorder="little")
-            bytes_cnt = int.from_bytes(udp_packet[4:10], byteorder="little")
-            raw_data = udp_packet[10:]
-            self.data_bytes_cnt = bytes_cnt
-            self.writeTimestamp(seq_num, time.time())
-            return seq_num, raw_data
+            self.writeTimestamp("PACKET", seq_num, time.time())
 
+            bytes_cnt = int.from_bytes(udp_packet[4:10], byteorder="little")
+            self.data_bytes_cnt = bytes_cnt
+
+            raw_data = udp_packet[10:]
+            _len = len(raw_data)
+            return seq_num, raw_data
         except Exception as e:
             if isinstance(e, socket.timeout):
                 print(f"No LVDS data in transmission for {self.timeout_s} seconds")
@@ -68,8 +75,9 @@ class DCA1000Udp:
     def isToBreak(self, start_ts, stop_mode, stop_mode_param):
         # break when time is up (duration or infinite mode)
         # or when data meets the required length (bytes mode)
-        return (stop_mode == "bytes" and self.data_bytes_cnt > stop_mode_param) or (
-            (stop_mode == "infinite" or stop_mode == "duration") and time.time() - start_ts > stop_mode_param + 0.01
+        return (stop_mode == "bytes" and self.data_bytes_cnt >= stop_mode_param) or (
+            stop_mode == "frames" and self.data_frames_cnt >= stop_mode_param) or(
+            (stop_mode == "infinite" or stop_mode == "duration") and time.time() - start_ts >= stop_mode_param
         )  # a little delay for complete frames
 
     def handleOneFramePackets(self) -> int:
@@ -77,49 +85,76 @@ class DCA1000Udp:
             self.f_udp = file
             while True:  # until finish one frame
                 try:
-                    seq_num, raw_data = self._rcvOnePacket()
-                    if not seq_num:
-                        raise TimeoutError("Device timeout. Frame ended")
+                    seq_num, raw_data = self.rcvOnePacket()
+                    if not seq_num: # one frame finished
+                        self.data_frames_cnt += 1
+                        raise TimeoutError(f"UDP timeout. Frame {self.data_frames_cnt} finished!") 
                     elif seq_num != self.last_seq_num + 1:
                         # padding when packets get lost
-                        print(
-                            f"{seq_num - self.last_seq_num - 1} packets lost from {self.last_seq_num + 1} to {seq_num - 1}, padded with 0x00"
-                        )
+                        f_ts = open(self.data_path + "_ts.txt", "at")
+                        info =  f"{seq_num - self.last_seq_num - 1} packets lost from {self.last_seq_num + 1} to {seq_num - 1}, padded with 0x00"
+                        f_ts.write(info + "\n")
+                        if Utils.logging.DEBUG_ON:
+                            print(info)
                         self._paddingLostPackets(self.last_seq_num, seq_num)
                     # save data to .bin
-                    self.f_udp.write(raw_data)
                     self.last_seq_num = seq_num
+                    self.f_udp.write(raw_data)
                 except Exception as e:
-                    print(f"{e}")
+                    if Utils.logging.DEBUG_ON:
+                        print(e)
                     break
 
     def handlePackets(self, start_ts, stop_mode, stop_mode_param):
-        last_seq_num = 0
+        self.last_seq_num = 0
         with open(self.data_path + "_raw_udp_packets.bin", "wb") as file:
             self.f_udp = file
-            # clear ts file
-            _ = open(self.data_path + "_ts.txt", "wt")
             while True:  # until the time to break or enough bytes
                 try:
                     if self.isToBreak(start_ts, stop_mode, stop_mode_param):
                         break
-
                     seq_num, raw_data = self.rcvOnePacket()
                     if not seq_num:
-                        raise TimeoutError("Device timeout!! Record ended")
-                    elif seq_num != last_seq_num + 1:
+                        raise TimeoutError("UDP timeout!! Record will end after receiving the last UDP packet.")
+                    elif seq_num != self.last_seq_num + 1:
                         # padding when packets get lost
-                        print(
-                            f"{seq_num - last_seq_num - 1} packets lost from {last_seq_num + 1} to {seq_num - 1}, padded with 0x00"
-                        )
-                        self._paddingLostPackets(last_seq_num, seq_num)
+                        f_ts = open(self.data_path + "_ts.txt", "at")
+                        info =  f"{seq_num - self.last_seq_num - 1} packets lost from {self.last_seq_num + 1} to {seq_num - 1}, padded with 0x00"
+                        f_ts.write(info + "\n")
+                        if Utils.logging.DEBUG_ON:
+                            print(info)
+                        self._paddingLostPackets(self.last_seq_num, seq_num)
                     # save data to .bin
+                    self.last_seq_num = seq_num
                     self.f_udp.write(raw_data)
-                    last_seq_num = seq_num
-
                 except Exception as e:
-                    print(f"{e}")
+                    if Utils.logging.DEBUG_ON:
+                        print(e)
                     break
+
+    def handleLastPacket(self):
+        self.setTimeout(2.5)
+        with open(self.data_path + "_raw_udp_packets.bin", "ab") as file:
+            self.f_udp = file
+            try:
+                seq_num, raw_data = self.rcvOnePacket()
+                if not seq_num: # one frame finished
+                    raise TimeoutError(f"Last UDP packet timeout...") 
+                else:
+                    if seq_num != self.last_seq_num + 1:
+                        # padding when packets get lost
+                        f_ts = open(self.data_path + "_ts.txt", "at")
+                        info =  f"{seq_num - self.last_seq_num - 1} packets lost from {self.last_seq_num + 1} to {seq_num - 1}, padded with 0x00"
+                        f_ts.write(info + "\n")
+                        if Utils.logging.DEBUG_ON:
+                            print(info)
+                        self._paddingLostPackets(self.last_seq_num, seq_num)
+                # save data to .bin
+                self.f_udp.write(raw_data)
+            except Exception as e:
+                if Utils.logging.DEBUG_ON:
+                    print(e)
+        print("Record finished!!!")
 
     def startRecord(self):
         cmd = struct.pack("<HHHH", UDP_CMD["HEADER"], UDP_CMD["RECORD_START"], 0, UDP_CMD["FOOTER"])

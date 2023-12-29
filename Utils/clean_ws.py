@@ -2,6 +2,9 @@ import os
 import shutil
 
 
+dir = ["__pycache__", "Data", "Log", ".vscode"]
+
+
 def clean_directory(directory_path):
     cli_log_file_path = os.path.join(directory_path, "CLI_LogFile.txt")
     if os.path.exists(cli_log_file_path):
@@ -9,7 +12,7 @@ def clean_directory(directory_path):
 
     for root, dirs, files in os.walk(directory_path):
         for directory in dirs:
-            if directory == "__pycache__" or directory == "Data" or directory == "Log":
+            if directory in dir:
                 to_remove_path = os.path.join(root, directory)
                 print(f"Removing {to_remove_path}")
                 shutil.rmtree(to_remove_path)

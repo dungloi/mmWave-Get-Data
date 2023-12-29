@@ -222,7 +222,7 @@ class DCA1000Cli:
         self.configEeprom()
         self.configRecordDelay()
 
-        time.sleep(0.5)
+        time.sleep(0.2)
 
     def closeControl(self, record_port):
         # kill shell
