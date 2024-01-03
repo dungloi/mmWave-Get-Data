@@ -59,7 +59,7 @@ Besides, the password for current user account will be needed to provide permiss
 
 ```specifically tested on NVIDIA Jetson Orin NX and AWR1843 & DCA1000EVM```
 
-If the ```SOCKET``` command mode and ```HW``` trigger mode are enabled, the  host device  will output PWM to trigger the Radar sensor. The timestamp of the trigger is aligned with the system time of the host device.
+If the ```SOCKET``` command mode and ```HW``` trigger mode are enabled, the  host device  will output PWM to trigger the Radar sensor. The time stamp of the trigger is aligned with the system time of the host device.
 
 Thus, if this feature is enabled, installation of package ```Jetson.GPIO``` is required (on NVIDIA Jetson platform).
 
@@ -67,10 +67,13 @@ Thus, if this feature is enabled, installation of package ```Jetson.GPIO``` is r
 
 ```specifically tested on NVIDIA Jetson Orin NX and Livox MID-360```
 
-If the timestamp synchronize mode is enabled, we will use PTP(Precision Time Protocol) for software clock synchronization. The timestamp is aligned with the system time of the host device. To install the required packages, please run the following command:
+If the time stamp synchronize mode is enabled, we will use PTP(Precision Time Protocol) for software clock synchronization. The timestamp is aligned with the system time of the host device. To install and use PTP, please run the following command:
 
 ```
-sudo apt-get install ptpd
+sudo apt-get install ptpd ethtool
+ifconfig                       # to find the available ethernet interface, e.g. enp7s0
+ethtool -T enp7s0         # check if the interface support time stamp
+sudo ptpd -M -i enp7s0 -C # start PTP as the MASTER clock source
 ```
 
 ### Attention
