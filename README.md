@@ -53,6 +53,26 @@ If no arguments are provided, the code will default to an infinite record mode. 
 
 Besides, the password for current user account will be needed to provide permission for serial port configuration.
 
+### Timestamp Sync between mmWave Radar and LiDAR
+
+#### Radar Hardware Trigger
+
+```specifically tested on NVIDIA Jetson Orin NX and AWR1843 & DCA1000EVM```
+
+If the ```SOCKET``` command mode and ```HW``` trigger mode are enabled, the  host device  will output PWM to trigger the Radar sensor. The timestamp of the trigger is aligned with the system time of the host device.
+
+Thus, if this feature is enabled, installation of package ```Jetson.GPIO``` is required (on NVIDIA Jetson platform).
+
+#### LiDAR PTP Synchronizer 
+
+```specifically tested on NVIDIA Jetson Orin NX and Livox MID-360```
+
+If the timestamp synchronize mode is enabled, we will use PTP(Precision Time Protocol) for software clock synchronization. The timestamp is aligned with the system time of the host device. To install the required packages, please run the following command:
+
+```
+sudo apt-get install ptpd
+```
+
 ### Attention
 
 1. The data will be transmitted in Q-in-LSB and I-in-MSB order, and cannot be modified. This format is opposite to the data collected by default configuration in mmWave Studio, and requires special handling.

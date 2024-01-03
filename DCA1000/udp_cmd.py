@@ -11,7 +11,9 @@ UDP_CMD = {
     "RECORD_STOP": 0x06,
 }
 
-MAX_PACKET_SIZE = 1508  # HEADER + DATA = 1466 = 4 + 6 + 1456, there is an error in "DCA1000EVM Data Capture Card User Guide"
+MAX_PACKET_SIZE = (
+    1508  # HEADER + DATA = 1466 = 4 + 6 + 1456, there is an error in "DCA1000EVM Data Capture Card User Guide"
+)
 MAX_PACKET_DATA_SIZE = 1456
 
 
@@ -76,9 +78,10 @@ class DCA1000Udp:
     def isToBreak(self, start_ts, stop_mode, stop_mode_param):
         # break when time is up (duration or infinite mode)
         # or when data meets the required length (bytes mode)
-        return (stop_mode == "bytes" and self.data_bytes_cnt >= stop_mode_param) or (
-            stop_mode == "frames" and self.data_frames_cnt >= stop_mode_param) or(
-            (stop_mode == "infinite" or stop_mode == "duration") and time.time() - start_ts >= stop_mode_param
+        return (
+            (stop_mode == "bytes" and self.data_bytes_cnt >= stop_mode_param)
+            or (stop_mode == "frames" and self.data_frames_cnt >= stop_mode_param)
+            or ((stop_mode == "infinite" or stop_mode == "duration") and time.time() - start_ts >= stop_mode_param)
         )  # a little delay for complete frames
 
     def handleOneFramePackets(self) -> int:
@@ -87,13 +90,13 @@ class DCA1000Udp:
             while True:  # until finish one frame
                 try:
                     seq_num, raw_data = self.rcvOnePacket()
-                    if not seq_num: # one frame finished
+                    if not seq_num:  # one frame finished
                         self.data_frames_cnt += 1
-                        raise TimeoutError(f"UDP timeout. Frame {self.data_frames_cnt} finished!") 
+                        raise TimeoutError(f"UDP timeout. Frame {self.data_frames_cnt} finished!")
                     elif seq_num != self.last_seq_num + 1:
                         # padding when packets get lost
                         f_ts = open(self.data_path + "_ts.txt", "at")
-                        info =  f"{seq_num - self.last_seq_num - 1} packets lost from {self.last_seq_num + 1} to {seq_num - 1}, padded with 0x00"
+                        info = f"{seq_num - self.last_seq_num - 1} packets lost from {self.last_seq_num + 1} to {seq_num - 1}, padded with 0x00"
                         f_ts.write(info + "\n")
                         if Utils.logging.DEBUG_ON:
                             print(info)
@@ -120,7 +123,7 @@ class DCA1000Udp:
                     elif seq_num != self.last_seq_num + 1:
                         # padding when packets get lost
                         f_ts = open(self.data_path + "_ts.txt", "at")
-                        info =  f"{seq_num - self.last_seq_num - 1} packets lost from {self.last_seq_num + 1} to {seq_num - 1}, padded with 0x00"
+                        info = f"{seq_num - self.last_seq_num - 1} packets lost from {self.last_seq_num + 1} to {seq_num - 1}, padded with 0x00"
                         f_ts.write(info + "\n")
                         if Utils.logging.DEBUG_ON:
                             print(info)
@@ -139,13 +142,13 @@ class DCA1000Udp:
             self.f_udp = file
             try:
                 seq_num, raw_data = self.rcvOnePacket()
-                if not seq_num: # one frame finished
-                    raise TimeoutError(f"Last UDP packet timeout...") 
+                if not seq_num:  # one frame finished
+                    raise TimeoutError(f"Last UDP packet timeout...")
                 else:
                     if seq_num != self.last_seq_num + 1:
                         # padding when packets get lost
                         f_ts = open(self.data_path + "_ts.txt", "at")
-                        info =  f"{seq_num - self.last_seq_num - 1} packets lost from {self.last_seq_num + 1} to {seq_num - 1}, padded with 0x00"
+                        info = f"{seq_num - self.last_seq_num - 1} packets lost from {self.last_seq_num + 1} to {seq_num - 1}, padded with 0x00"
                         f_ts.write(info + "\n")
                         if Utils.logging.DEBUG_ON:
                             print(info)
