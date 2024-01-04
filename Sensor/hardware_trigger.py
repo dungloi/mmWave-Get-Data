@@ -28,7 +28,7 @@ OUTPUT_PINS = {
 
 
 class HardwareTrigger:
-    def __init__(self, gpio_high_duration_s, pulse_duration_s) -> None:
+    def __init__(self, gpio_high_duration_s, pulse_interval_s) -> None:
         self.output_pin = OUTPUT_PINS.get(GPIO.model, None)
         if self.output_pin is None:
             raise Exception("PWM not supported on this board")
@@ -39,13 +39,13 @@ class HardwareTrigger:
         GPIO.setup(self.output_pin, GPIO.OUT, initial=GPIO.LOW)
 
         self.high_dur = gpio_high_duration_s
-        self.pulse_dur = pulse_duration_s
+        self.pulse_interval = pulse_interval_s
         self.trigger_cnt = 0
 
     def trigger(self, event, callback=None) -> float:
         try:
             # Wait for the event to be set
-            while event.wait(self.pulse_dur * 2):
+            while event.wait(self.pulse_interval * 2):
                 trigger_time = time.time()
 
                 GPIO.output(self.output_pin, GPIO.HIGH)
@@ -68,12 +68,12 @@ class HardwareTrigger:
 
 if __name__ == "__main__":
     cnt = 0
-    pulse_dur = 0.1
+    pulse_interval = 0.1
 
     def callback(prefix, cnt, ts):
         print(f"{prefix} {cnt}, trigger ts in sub thread: {ts}")
 
-    trigger = HardwareTrigger(5e-6, pulse_dur)
+    trigger = HardwareTrigger(5e-6, pulse_interval)
     trigger_event = threading.Event()
     trigger_thread = threading.Thread(target=lambda: trigger.trigger(trigger_event, callback))
 
@@ -81,7 +81,7 @@ if __name__ == "__main__":
     trigger_thread.start()
     while True:
         ts = time.time()
-        if ts - start_ts > cnt * pulse_dur:
+        if ts - start_ts > cnt * pulse_interval:
             trigger_event.set()
             print(f"trigger ts in main thread: {ts}, num: {cnt}")
             cnt += 1

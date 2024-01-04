@@ -84,7 +84,7 @@ class DCA1000Udp:
             or ((stop_mode == "infinite" or stop_mode == "duration") and time.time() - start_ts >= stop_mode_param)
         )  # a little delay for complete frames
 
-    def handleOneFramePackets(self) -> int:
+    def handleOneFramePackets(self):
         with open(self.data_path + "_raw_udp_packets.bin", "ab") as file:
             self.f_udp = file
             while True:  # until finish one frame

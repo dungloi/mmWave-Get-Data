@@ -100,6 +100,7 @@ class RadarRecorder:
         # clear file
         _ = open(dca1000_socket_obj.data_path + "_raw_udp_packets.bin", "wb")
         _ = open(dca1000_socket_obj.data_path + "_ts.txt", "wt")
+
         if self.sensor_trigger_mode == "HW":
             dca1000_socket_obj.setTimeout(0.005)  # packets interval
 

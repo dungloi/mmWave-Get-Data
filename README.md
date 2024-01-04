@@ -71,7 +71,7 @@ If the time stamp synchronize mode is enabled, we will use PTP(Precision Time Pr
 
 ```
 sudo apt-get install ptpd ethtool
-ifconfig                       # to find the available ethernet interface, e.g. enp7s0
+ifconfig  # to find the available ethernet interface, e.g. enp7s0
 ethtool -T enp7s0         # check if the interface support time stamp
 sudo ptpd -M -i enp7s0 -C # start PTP as the MASTER clock source
 ```
