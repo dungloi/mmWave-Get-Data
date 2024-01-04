@@ -137,8 +137,8 @@ class RadarRecorder:
         if getattr(args, "duration") is not None:
             record_duration = args.duration
             stop_mode = "duration"
-            stop_mode_param = record_duration * 1000
-            self.dca1000_json_data["DCA1000Config"]["captureConfig"]["durationToCapture_ms"] = stop_mode_param
+            stop_mode_param = record_duration 
+            self.dca1000_json_data["DCA1000Config"]["captureConfig"]["durationToCapture_ms"] = stop_mode_param * 1000
         elif getattr(args, "bytes") is not None:
             record_frames = args.bytes / self.radar_cfg_obj.params["Bytes per frame"]
             record_duration = record_frames * self.frame_duration
@@ -169,10 +169,10 @@ class RadarRecorder:
             self.recordDataSocket(stop_mode, stop_mode_param)
 
         print(
-            f"\nIf tookits worked properly, the raw data was recorded in: {os.path.join(os.getcwd(), self.data_path)}"
+            f"\nIf toolkits worked properly, the raw data was recorded in: {os.path.join(os.getcwd(), self.data_path)}"
         )
 
-    def paramsParser():
+    def paramsParser(self):
         parser = argparse.ArgumentParser()
         parser.add_argument("-d", "--duration", type=float, help="Record duration in second", required=False)
         parser.add_argument("-b", "--bytes", type=float, help="Record bytes", required=False)
@@ -192,7 +192,7 @@ class RadarRecorder:
 
 
 Utils.logging.DEBUG_ON = 0
-DEFAULT_RECORD_DURATION = 10
+DEFAULT_RECORD_DURATION = 600
 DCA1000_TRIGGER_HIGH_DUR = 4e-6  # 5ns to 4us
 
 if __name__ == "__main__":
@@ -206,7 +206,7 @@ if __name__ == "__main__":
     dca1000_config_json = "DCA1000/config/configFile.json"
     log_dir = "Log"
     data_dir = "Data"
-    data_name_prefix = "test"
+    data_name_prefix = "test_0"
 
     radar_record_obj = RadarRecorder(
         sensor_model,

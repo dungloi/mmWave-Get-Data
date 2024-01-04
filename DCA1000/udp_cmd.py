@@ -56,14 +56,12 @@ class DCA1000Udp:
     def rcvOnePacket(self):
         try:
             udp_packet, _ = self.client.recvfrom(MAX_PACKET_SIZE)
-
             # DATA format: SequenceNum(4) ByteCnt(6) RawData(48 - 1456)
             seq_num = int.from_bytes(udp_packet[0:4], byteorder="little")
-            self.writeTimestamp("PACKET", seq_num, time.time())
-
+            if Utils.logging.DEBUG_ON:
+                 self.writeTimestamp("PACKET", seq_num, time.time())
             bytes_cnt = int.from_bytes(udp_packet[4:10], byteorder="little")
             self.data_bytes_cnt = bytes_cnt
-
             raw_data = udp_packet[10:]
             _len = len(raw_data)
             return seq_num, raw_data
