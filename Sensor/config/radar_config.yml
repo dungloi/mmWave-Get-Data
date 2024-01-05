@@ -94,7 +94,7 @@ frameCfg:
     numFrames: 0 # 0-65535, 0 means infinite
     framePeriodicity: 100 # ms
     triggerMode:
-        2 # 1: Software trigger
+        1 # 1: Software trigger
         # 2: Hardware trigger.
     frameTriggerDelay: 0 # ms
 

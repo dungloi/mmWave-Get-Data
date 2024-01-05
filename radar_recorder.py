@@ -192,8 +192,8 @@ class RadarRecorder:
 
 
 Utils.logging.DEBUG_ON = 0
-DEFAULT_RECORD_DURATION = 600
-DCA1000_TRIGGER_HIGH_DUR = 4e-6  # 5ns to 4us
+DEFAULT_RECORD_DURATION = 300
+DCA1000_TRIGGER_HIGH_DUR = 1e-6  # 5ns to 4us
 
 if __name__ == "__main__":
     sensor_model = "AWR1843"
