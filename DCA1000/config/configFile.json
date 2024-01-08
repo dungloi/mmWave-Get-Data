@@ -20,7 +20,7 @@
         },
         "captureConfig": {
             "fileBasePath": "/home/nv/mmwave_ws/mmWave-Get-Data/Data",
-            "filePrefix": "test_0",
+            "filePrefix": "indoor_0_300",
             "maxRecFileSize_MB": 1024,
             "sequenceNumberEnable": 0,
             "captureStopMode": "infinite",

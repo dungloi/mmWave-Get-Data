@@ -166,6 +166,9 @@ class RadarRecorder:
                 json.dump(self.dca1000_json_data, file, indent=4)
             self.recordDataCLI(record_duration)
         elif cmd_mode == "SOCKET":
+            if stop_mode == "frames" and self.sensor_trigger_mode == "SW":
+                print("Unsupported mode for SW trigger!!!")
+                return
             self.recordDataSocket(stop_mode, stop_mode_param)
 
         print(
@@ -206,7 +209,7 @@ if __name__ == "__main__":
     dca1000_config_json = "DCA1000/config/configFile.json"
     log_dir = "Log"
     data_dir = "Data"
-    data_name_prefix = "test_0"
+    data_name_prefix = "indoor_0_300"
 
     radar_record_obj = RadarRecorder(
         sensor_model,

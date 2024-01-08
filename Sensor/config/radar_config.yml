@@ -38,11 +38,11 @@ profileCfg:
         rampEndTime: 60 # u-sec
         txOutPower: 0 # Tx output power back-off code for tx antennas
         txPhaseShifter: 0 # Tx phase shifter for tx antennas
-        freqSlopeConst: 29.9817 # MHz/usec, any value greater than 0
+        freqSlopeConst: 50 # MHz/usec, any value greater than 0
         txStartTime: 0 # u-sec
         numAdcSamples: 256 # number of ADC samples collected during "ADC Sampling Time"
         digOutSampleRate:
-            10000 # ADC sampling frequency in ksps.
+            5000 # ADC sampling frequency in ksps.
             # numAdcSamples / digOutSampleRate = "ADC Sampling Time"
         hpfCornerFreq1:
             0 # HPF1 (High Pass Filter 1) corner frequency
