@@ -1,4 +1,4 @@
-# Collecting ADC Raw Data from xWR68xx / xWR18xx
+# Collecting ADC Raw Data through xWR68xx / xWR18xx
 
   - Use serial port to send cfg parameters to xWR68xx(not fully tested) / xWR18xx(well tested).
   - Support using both DCA1000EVM_CLI_Control executable file and UDP packets through ethernet to send commands and collect data.
