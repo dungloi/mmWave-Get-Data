@@ -20,11 +20,11 @@ cp ./DCA1000_SDK/Release/DCA1000EVM_CLI_* ./DCA1000_SDK/Release/libRF_API.so ./D
 
 - modify ```Sensor/config/*.yml``` (If needed), but must ensure the parameter “lvdsStreamCfg -1 0 1 0”.
 - modify ```DCA1000/CLI/configFile.json``` (If needed), notice that the data path, capture mode and data prefix (if enable timestamp record) will be automatically set.
-- modify serial port in ```/dev/tty*``` format, ```*``` = ```ACM ```(xWR18xx) or ```USB``` (xWR68xx) .
+- modify serial port in ```/dev/tty*``` format, ```*``` = ```ACM```(xWR18xx) or ```USB``` (xWR68xx) .
 
-### Config UDP Max Recv Buffer Size
+### Config System UDP Max Recv Buffer Size
 
-Set receive buffer to e.g. 12582912 Bytes:
+Set system UDP receive buffer to e.g. 12582912 Bytes:
 
 - cmd: ```sudo gedit /etc/sysctl.conf```
 - add a new line: ```net.core.rmem_max = 6291456```
@@ -81,6 +81,8 @@ sudo ptpd -M -i enp7s0 -C # start PTP as the MASTER clock source
 1. The data will be transmitted in Q-in-LSB and I-in-MSB order, and cannot be modified. This format is opposite to the data collected by default configuration in mmWave Studio, and requires special handling.
 
 2. ```UDP Related```  Please note that each frame trigger corresponds to a continuous transmission of UDP data packets, which do not include several bytes determined by "data size % packet size" (remainder). As a result, there will be some data from the previous frame transmitted together with the data of the new frame in one packet. Approximately 2 seconds after the trigger is finally stopped, the last data packet will be transmitted, and all the data packets form the complete collected data. Therefore, special attention is required when processing the data in real-time, as the first UDP packet corresponding to each frame trigger does not align perfectly with the start of that frame's data.
+
+3. ```USB port Related``` To ensure proper execution of the program, it is necessary to modify ```self.cfg_port_obj.baudrate``` to another value, run the recorder, and then stop the program and change it to ```115200```. This modification enables the port to function correctly.
 
 ## Acknowledgement
 
