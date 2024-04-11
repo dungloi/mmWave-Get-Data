@@ -37,8 +37,9 @@ class SensorSerial:
                 115200,
                 parity=serial.PARITY_NONE,
                 stopbits=serial.STOPBITS_ONE,
-                timeout=0.2,
+                timeout=0.5,
             )
+            # self.cfg_port_obj.baudrate = 115200 # only by reset can serial work
             if not self.cfg_port_obj.isOpen():
                 self.log.error("Cfg port is not open: {}".format(self.cfg_port))
 

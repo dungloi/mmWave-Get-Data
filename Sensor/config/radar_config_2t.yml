@@ -9,7 +9,7 @@ dfeDataOutputMode:
 
 channelCfg:
     rxChannelEn: 15 # 0x1111b, 4 antennas supported
-    txChannelEn: 7 # For example, in IWR6843 ISK, the 2 azimuth antennas can be enabled using bitmask 0x5 (i.e. tx1 and tx3). The azimuth and elevation antennas can both be enabled using bitmask 0x7 (i.e.tx1, tx2 and tx3).
+    txChannelEn: 5 # For example, in IWR6843 ISK, the 2 azimuth antennas can be enabled using bitmask 0x5 (i.e. tx1 and tx3). The azimuth and elevation antennas can both be enabled using bitmask 0x7 (i.e.tx1, tx2 and tx3).
     cascading: 0
 
 adcCfg:
@@ -33,12 +33,12 @@ profileCfg:
             0 # Legacy frame (dfeOutputMode=1): could be any allowed value but only one valid profile per config is supported
             # Advanced frame (dfeOutputMode=3): could be any allowed value but only one profile per subframe is supported. However, different subframes can have different profiles
         startFreq: 77.0 # GHz xWR18xx = 77, xWR68xx = 60
-        idleTime: 40.0 # u-sec
+        idleTime: 100.0 # u-sec
         adcStartTime: 6.0 # u-sec
         rampEndTime: 60 # u-sec
         txOutPower: 0 # Tx output power back-off code for tx antennas
         txPhaseShifter: 0 # Tx phase shifter for tx antennas
-        freqSlopeConst: 60 # MHz/usec, any value greater than 0
+        freqSlopeConst: 50 # MHz/usec, any value greater than 0
         txStartTime: 0 # u-sec
         numAdcSamples: 256 # number of ADC samples collected during "ADC Sampling Time"
         digOutSampleRate:
@@ -78,15 +78,6 @@ chirpCfg:
         idle time variation: 0 # u-sec
         ADC start time variation: 0 # u-sec
         tx antenna enable mask: 4 # Tx3, Tx2, Tx1.
-    config_info_2: # this is customized set and modified by user
-        chirp start index: 2
-        chirp end index: 2
-        profile identifier: 0
-        start frequency variation: 0 # Hz
-        frequency slope variation: 0 # kHz/us
-        idle time variation: 0 # u-sec
-        ADC start time variation: 0 # u-sec
-        tx antenna enable mask: 2 # Tx3, Tx2, Tx1.
 
 lowPower:
     NOP: 0
@@ -96,7 +87,7 @@ lowPower:
 
 frameCfg:
     chirpStartIdx: 0 # 0-511, corresponding chirpCfg should be defined
-    chirpEndIdx: 2 # same as start index
+    chirpEndIdx: 1 # same as start index
     numLoops:
         64 # 4-255.
         # For xwr16xx/xwr68xx demos where DSP version of Doppler DPU is used, the Doppler chirps (i.e. number of loops) should be a multiple of 4 due to windowing requirement.

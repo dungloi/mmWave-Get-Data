@@ -194,7 +194,7 @@ class RadarRecorder:
         return args
 
 
-Utils.logging.DEBUG_ON = 0
+Utils.logging.DEBUG_ON = 1
 DEFAULT_RECORD_DURATION = 300
 DCA1000_TRIGGER_HIGH_DUR = 1e-6  # 5ns to 4us
 
@@ -209,7 +209,7 @@ if __name__ == "__main__":
     dca1000_config_json = "DCA1000/config/configFile.json"
     log_dir = "Log"
     data_dir = "Data"
-    data_name_prefix = "indoor_0_300"
+    data_name_prefix = "test"
 
     radar_record_obj = RadarRecorder(
         sensor_model,
